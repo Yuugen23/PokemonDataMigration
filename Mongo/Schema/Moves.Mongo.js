@@ -17,4 +17,4 @@ const moveSchema = new mongoose.Schema({
     learntBy: [Number]
 })
 
-module.exports = mongoose.model('moveSchema', moveSchema)
+module.exports = mongoose.model('Move', moveSchema)

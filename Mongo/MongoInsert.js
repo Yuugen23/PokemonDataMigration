@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Pokemon = require('./Schema/Pokemon.Mongo')
+const Move = require('./Schema/Moves.Mongo')
 
 async function pokeInsert(pokemon) {
     const filter = {
@@ -12,4 +13,18 @@ async function pokeInsert(pokemon) {
     })
 }
 
-module.exports = pokeInsert
+async function moveInsert(move) {
+    const filter = {
+        name : move.name
+    }
+    const update = move
+
+    await Move.findOneAndUpdate(filter, update, {
+        upsert: true
+    })
+}
+
+module.exports = {
+    pokeInsert,
+    moveInsert
+}
