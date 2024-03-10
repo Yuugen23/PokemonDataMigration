@@ -10,6 +10,17 @@ async function getMoveURL(NUM) {
         await page.goto(MOVELISTURL, { timeout: 60000 })
         await page.waitForSelector('tr', { timeout: 60000 })
 
+        function extractEffects(parentElement) {
+            const effectText = parentElement.querySelector('h2#move-effects + p').textContent;
+            const zMoveHeader = parentElement.querySelector('h3');
+            const zMoveText = zMoveHeader ? getNextParagraphText(zMoveHeader) : '';
+
+
+            return {
+                effect: effectText.trim(),
+                zMoveEffects: zMoveText.trim()
+            }
+        }
 
 
         const moveArray = await page.evaluate((NUM) => {
@@ -19,7 +30,7 @@ async function getMoveURL(NUM) {
 
             moveRows.forEach((move, idx) => {
                 const newMove = {
-                    id: idx - 1,
+                    id: idx,
                     name: move.childNodes[1].innerText,
                     link: move.childNodes[1].firstChild.href
                 }
@@ -29,7 +40,6 @@ async function getMoveURL(NUM) {
             return moveLinks
         }, NUM, extractEffects)
 
-        console.log(moveArray)
         return moveArray
 
     }
@@ -66,6 +76,12 @@ async function getMoveDetails(moveData) {
                 return null; // Return null if the number is not found
             }
 
+
+            function getNextParagraphText(element) {
+                const nextParagraph = element.nextElementSibling;
+                return nextParagraph ? nextParagraph.textContent.trim() : '';
+            }
+
             function extractEffects(parentElement) {
                 const effectText = parentElement.querySelector('h2#move-effects + p').textContent;
                 const zMoveHeader = parentElement.querySelector('h3');
@@ -76,11 +92,6 @@ async function getMoveDetails(moveData) {
                     effect: effectText.trim(),
                     zMoveEffects: zMoveText.trim()
                 }
-            }
-
-            function getNextParagraphText(element) {
-                const nextParagraph = element.nextElementSibling;
-                return nextParagraph ? nextParagraph.textContent.trim() : '';
             }
 
             const td = Array.from(document.querySelectorAll('td'))
@@ -114,7 +125,7 @@ async function getMoveDetails(moveData) {
             return move
         }, moveData)
 
-        console.log(move)
+        // console.log(move)
         return move
 
     }
@@ -139,7 +150,13 @@ const data2 = {
     link: 'https://pokemondb.net/move/acrobatics'
 }
 
-getMoveURL(10)
+// const arr =  
+
+// console.log(getMoveURL(5))
+
+// arr.forEach( e =>{
+//     getMoveDetails(e)
+// } )
 
 module.exports = {
     getMoveURL,

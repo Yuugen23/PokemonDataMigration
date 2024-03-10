@@ -147,7 +147,7 @@ async function getPokemon(URL, isMega, currentMega) {
         }
       })
 
-      const nextPokemon = Array.from(document.querySelectorAll('a'))[dexNo === 1 ? 58 : 59].href
+      const nextPokemon = Array.from(document.querySelectorAll('a'))[dexNo === 1 ? 59 : 60].href
 
       return [pokemon, nextPokemon, mega, jump]
     }, isMega, currentMega)

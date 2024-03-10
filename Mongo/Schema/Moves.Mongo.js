@@ -12,7 +12,7 @@ const moveSchema = new mongoose.Schema({
     basePower: String,
     accuracy: String,
     pp: String,
-    makeContact: true,
+    makeContact: Boolean,
     intro: String,
     learntBy: [Number]
 })

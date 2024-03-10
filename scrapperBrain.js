@@ -16,11 +16,12 @@ const mongoInsert = require('./Mongo/MongoInsert')
 
 const TYPE = process.argv[2]
 const URL = TYPE === 'pokemon' ? (process.argv[3] || 'https://pokemondb.net/pokedex/pidgey') : ''
-const LIMIT = TYPE === 'pokemon' ? (Number(process.argv[4]) || 1) : (Number(process.argv[4]) || 1)
+const LIMIT = TYPE === 'pokemon' ? (Number(process.argv[4]) || 1) : (Number(process.argv[3]) || 1)
 
 
 async function fetchPokemonData(URL, LIMIT, isMega, currentMega) {
   if (LIMIT > 0) {
+    console.log(`Scrapping for ${URL}`)
     const [pokemon, next, mega] = await pokemonScrapper.getPokemon(URL, isMega, currentMega)
     console.log(`Data fetched for ${pokemon.name}`)
     try {
@@ -40,20 +41,31 @@ async function fetchPokemonData(URL, LIMIT, isMega, currentMega) {
   }
 }
 
-async function fetchMovesData(LIMIT) {
+async function fetchMovesData(LIMIT) 
+{
   const moveArray = await moveScrapper.getMoveURL(LIMIT)
-  moveArray.foreach( async (move) => {
+
+
+  moveArray.forEach( async (move) => {
     const moveData = await moveScrapper.getMoveDetails(move)
-    mongoInsert.moveInsert(moveData)
+
+    console.log(moveData)
+
+    await mongoInsert.moveInsert(moveData)
   })
+
   console.log(moveArray);
 }
 
-function start() {
-  // await mongo.mongoConnect()
+async function start() {
+  await mongo.mongoConnect()
+
+  console.log(process.argv)
+
   if(TYPE === 'pokemon') {
     fetchPokemonData(URL, LIMIT, false, 0)
   } else {
+    console.log(LIMIT)
     fetchMovesData(LIMIT)
   }
 }
